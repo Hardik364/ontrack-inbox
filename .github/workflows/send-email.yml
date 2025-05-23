@@ -1,7 +1,9 @@
 name: Send Email
+
+# Triggers for when this workflow will run
 on:
-  workflow_dispatch:  # Allows manual triggering
-  push:              # You can modify these triggers as needed
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions tab
+  push:              # Runs on every push to master branch
     branches:
       - master
 
@@ -12,11 +14,27 @@ jobs:
       - name: Send mail
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
+          # Gmail SMTP settings
+          server_address: smtp.gmail.com  # Gmail SMTP server
+          server_port: 587               # Gmail SMTP port
+          username: ${{ secrets.MAIL_USERNAME }}  # Your Gmail address
+          password: ${{ secrets.MAIL_PASSWORD }}  # Your Gmail App Password
+          
+          # Email content
           subject: GitHub Actions Test ✅
-          body: This is a test email from GitHub Actions!
-          to: ${{ secrets.MAIL_TO }}
-          from: ${{ secrets.MAIL_FROM }}
+          body: |
+            This is a test email from GitHub Actions!
+            
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            
+            View the run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          
+          # Email addresses
+          to: ${{ secrets.MAIL_TO }}     # Recipient email
+          from: ${{ secrets.MAIL_FROM }}  # Sender email (should be same as username)
+          
+          # Additional settings
+          secure: true                   # Use TLS
+          convert_markdown: true         # Allows markdown in body
