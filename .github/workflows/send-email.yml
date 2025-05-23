@@ -1,0 +1,22 @@
+name: Send Email
+on:
+  workflow_dispatch:  # Allows manual triggering
+  push:              # You can modify these triggers as needed
+    branches:
+      - master
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: GitHub Actions Test ✅
+          body: This is a test email from GitHub Actions!
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.MAIL_FROM }}
